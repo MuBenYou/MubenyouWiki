@@ -2,6 +2,9 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/home.vue'
 import About from '../views/about.vue'
 import AdminEbook from '../views/admin/admin-ebook.vue'
+
+import Test from '../views/admin/test.vue'
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -22,11 +25,24 @@ const routes: Array<RouteRecordRaw> = [
     name: 'AdminEbook',
     component: AdminEbook
   },
+  {
+    path:'/test',
+    name:'Test',
+    component:Test
+  }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  //  从其他地方访问是否有这个地址
+  if(to.matched.length === 0) { //没有匹配到当前路由
+    next('/test')
+  }
+  next();
+});
 
 export default router

@@ -29,7 +29,7 @@
 
         <!-- domain类的位置 -->
         <javaModelGenerator targetProject="src\main\java"
-                            targetPackage="com.lrvinglm.miki.domain"/>
+                            targetPackage="com.mby.wiki.domain"/>
 
         <!-- mapper xml的位置 -->
         <sqlMapGenerator targetProject="src\main\resources"
@@ -37,7 +37,7 @@
 
         <!-- mapper类的位置 -->
         <javaClientGenerator targetProject="src\main\java"
-                             targetPackage="com.lrvinglm.miki.mapper"
+                             targetPackage="com.mby.wiki.mapper"
                              type="XMLMAPPER"/>
         <!--一次只能生成一个table-->
         <!--自动生成表的代码-->
