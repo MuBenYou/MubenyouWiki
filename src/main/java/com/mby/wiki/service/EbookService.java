@@ -83,7 +83,7 @@ public class EbookService {
      */
     public void delete(Long id){
         //删除指定id的数据
-        ebookMapper.deleteByPrimaryKey(id);
+        ebookMapper.deleteByPrimaryKey(id);//deleteByPrimaryKey根据主键来删除。
 
     }
 }
