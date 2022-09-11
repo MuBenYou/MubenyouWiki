@@ -75,6 +75,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, ref} from 'vue';//写上onMounted VUE3.0 setup集成了 导入ref 做响应式数据
 import axios from 'axios';
+import {message} from "ant-design-vue";
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -131,8 +132,12 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         const data = response.data;
-        console.log(data);
-        ebooks.value = data.content.list;
+        if (data.success){
+          ebooks.value = data.content.list;
+        }else {
+          message.error(data.message);
+        }
+
 
         //重置分页按钮
         pagination.value.current = params.page;//点第二页的按钮的时候前端 不会刷新 还是第一页的地方 实际我们以及到第二页了

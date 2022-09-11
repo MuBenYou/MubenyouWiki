@@ -9,6 +9,7 @@ import com.mby.wiki.service.EbookService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 //@Controller  返回页面 @RestController 是返回字符串的
 @RestController  //@ResponseBody用来返回字符串或JSON对象 大多是JSON对象
@@ -18,7 +19,7 @@ public class EbookControl {
     private EbookService ebookService;
 
     @RequestMapping("/list")  //接口支持所有的请求方式
-    public CommonResp list(EbookQueryReq req){
+    public CommonResp list(@Valid EbookQueryReq req){
         CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
         PageResp<EbookQueryResp> list= ebookService.list(req);
         resp.setContent(list);
