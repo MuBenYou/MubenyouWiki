@@ -34,6 +34,7 @@ public class CategoryService {
     public PageResp<CategoryQueryResp> list(CategoryQueryReq req){
         //domain下的example mybaits自动生成了很多方法
         CategoryExample categoryExample = new CategoryExample();
+        categoryExample.setOrderByClause("sort asc");
         //当作where语句
         CategoryExample.Criteria criteria = categoryExample.createCriteria();
 
@@ -56,6 +57,17 @@ public class CategoryService {
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(respList);
         return pageResp;
+    }
+    public List<CategoryQueryResp> all(){
+        //domain下的example mybaits自动生成了很多方法
+        CategoryExample categoryExample = new CategoryExample();
+        categoryExample.setOrderByClause("sort asc");
+        //当作where语句
+        List<Category> categoryList = categoryMapper.selectByExample(categoryExample);//查询到所有的Category实体
+
+        List<CategoryQueryResp> list = CopyUtil.copyList(categoryList, CategoryQueryResp.class);
+
+        return list;
     }
 
     /**

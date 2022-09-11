@@ -2,14 +2,15 @@ package com.mby.wiki.controller;
 
 import com.mby.wiki.req.CategoryQueryReq;
 import com.mby.wiki.req.CategorySaveReq;
-import com.mby.wiki.resp.CommonResp;
 import com.mby.wiki.resp.CategoryQueryResp;
+import com.mby.wiki.resp.CommonResp;
 import com.mby.wiki.resp.PageResp;
 import com.mby.wiki.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 //@Controller  返回页面 @RestController 是返回字符串的
 @RestController  //@ResponseBody用来返回字符串或JSON对象 大多是JSON对象
@@ -17,6 +18,14 @@ import javax.validation.Valid;
 public class CategoryControl {
     @Resource
     private CategoryService categoryService;
+
+    @RequestMapping("/all")  //接口支持所有的请求方式
+    public CommonResp all(){
+        CommonResp<List<CategoryQueryResp>> resp = new CommonResp<>();
+        List<CategoryQueryResp> list= categoryService.all();
+        resp.setContent(list);
+        return resp;
+    }
 
     @RequestMapping("/list")  //接口支持所有的请求方式
     public CommonResp list(@Valid CategoryQueryReq req){
