@@ -6,19 +6,19 @@
           :style="{ height: '100%', borderRight: 0 }"
           @click="handleClick"
       >
-        <a-sub-menu key="welcome">
+        <a-menu-item key="welcome">
           <router-link to="'/'">
             <MailOutlined />
             <span>欢迎</span>
           </router-link>
-        </a-sub-menu>
+        </a-menu-item>
           <a-sub-menu v-for="item in level1" :key="item.id">
             <template v-slot:title>
               <span><user-outlined />{{item.name}}</span>
             </template>
-            <a-sub-menu v-for="child in item.children" :key="child.id">
-              <MailOutlined /><span>>{{child.name}}</span>
-          </a-sub-menu>
+            <a-menu-item v-for="child in item.children" :key="child.id">
+              <MailOutlined /><span>{{child.name}}</span>
+          </a-menu-item>
         </a-sub-menu>
       </a-menu>
     </a-layout-sider>
