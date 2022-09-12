@@ -1,6 +1,6 @@
 <template>
   <a-layout-footer style="text-align: center">
-    Ant Design ©2018 Created by Ant UED
+    MuBenYou 电子书 ©2018 Created by Ant UED
   </a-layout-footer>
 </template>
 
