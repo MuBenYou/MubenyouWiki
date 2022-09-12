@@ -42,6 +42,9 @@ public class EbookService {
         if(!ObjectUtils.isEmpty(req.getName())){//不为空才执行
             criteria.andNameLike("%"+req.getName()+"%"); //模糊查询的条件
         }
+        if(!ObjectUtils.isEmpty(req.getCategoryId2())){//不为空才执行
+            criteria.andCategory2IdEqualTo(req.getCategoryId2()); //模糊查询的条件
+        }
         PageHelper.startPage(req.getPage(),req.getSize());//只会分页最近的需要查询的sql，当页面多条sql时 把分页和sql放一起
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);//查询到所有的Ebook实体
 
