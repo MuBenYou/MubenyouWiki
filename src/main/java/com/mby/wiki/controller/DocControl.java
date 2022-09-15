@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 //@Controller  返回页面 @RestController 是返回字符串的
@@ -37,15 +38,16 @@ public class DocControl {
 
     @PostMapping("/save")
     public CommonResp save(@Valid @RequestBody DocSaveReq req){
-        CommonResp resp = new CommonResp();
+        CommonResp resp = new CommonResp <>();
         docService.save(req);
         return resp;
     }
 
-    @DeleteMapping("/delete/{id}")
-    public CommonResp delete(@PathVariable long id){
-        CommonResp resp = new CommonResp();
-        docService.delete(id);
+    @DeleteMapping("/delete/{idsStr}")
+    public CommonResp delete(@PathVariable String idsStr){
+        CommonResp resp = new CommonResp <>();
+        List<String> list = Arrays.asList(idsStr.split(","));
+        docService.delete(list);
         return resp;
     }
 }
