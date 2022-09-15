@@ -92,10 +92,20 @@ import {defineComponent, onMounted, ref} from 'vue';//写上onMounted VUE3.0 set
 import axios from 'axios';
 import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
+import {useRoute} from "vue-router";
 
 export default defineComponent({
   name: 'AdminDoc',
   setup() {
+    //这个是路由内置的一个变量,我们可以按alt+enter导入
+    const route = useRoute();
+    console.log("路由:",route);
+    console.log("route.path: ", route.path);             //path路径不含参数
+    console.log("route.query: ", route.query);           //query参数
+    console.log("route.param: ", route.params);         //params参数
+    console.log("route.fullPath: ", route.fullPath);     //fullPath全路劲，包含路劲path和参数query，params
+    console.log("route.name: ", route.name);              //index.ts中的name
+    console.log("route.meta: ", route.meta);              //自定义的扩展信息
     const param = ref();
     param.value = {};
     const docs = ref();//响应式数据 获取的书籍实时反馈到页面上
@@ -221,7 +231,11 @@ export default defineComponent({
      */
     const add = () =>{
       modalVisible .value = true;
-      doc.value={};
+      doc.value={
+        ebookId: route.query.ebookId
+      };
+
+
       treeSelectData.value = Tool.copy(level1.value);
 
       //为选择树添加一个“无”
