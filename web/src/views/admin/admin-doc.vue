@@ -40,7 +40,8 @@
                 cancel-text="否"
                 @confirm="handleDelete(record.id)"
             >
-              <a-button type="primary" >
+
+              <a-button type="primary"  >
                 删除
               </a-button>
             </a-popconfirm>
@@ -48,6 +49,7 @@
           </a-space>
         </template>
       </a-table>
+
     </a-layout-content>
 
   </a-layout>
@@ -80,6 +82,9 @@
       <a-form-item label="顺序">
         <a-input v-model:value="doc.sort"/>
       </a-form-item>
+      <a-form-item label="内容">
+        <div id="content"></div>
+      </a-form-item>
 
 
     </a-form>
@@ -93,6 +98,10 @@ import axios from 'axios';
 import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
+// import { Modal } from 'ant-design-vue';
+
+import E from 'wangeditor';
+
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -112,6 +121,20 @@ export default defineComponent({
 
 
     const loading = ref(false);
+    // const showConfirm = () => {
+    //   Modal.confirm({
+    //     title: '你确定要删除吗?',
+    //     icon: createVNode(ExclamationCircleOutlined),
+    //     content: createVNode('div', { style: 'color:red;' }, 'Some descriptions'),
+    //     onOk() {
+    //       console.log('OK');
+    //     },
+    //     onCancel() {
+    //       console.log('Cancel');
+    //     },
+    //     class: 'test',
+    //   });
+    // };
 
     const columns = [//页面的响应变量 不是数据的响应变量 代表就是这个表格里面有多少个数据 下面数据我们自己定义的
 
@@ -169,6 +192,9 @@ export default defineComponent({
     const doc=ref({});
     const modalVisible = ref(false);
     const modalLoading = ref(false);
+    const  editor = new E('#content');
+
+    
     const handleModalOk = () => {
       modalLoading.value = true;
       axios.post("/doc/save",doc.value).then((response) => {
@@ -248,6 +274,7 @@ export default defineComponent({
      * 编辑
      */
     const edit = ( record:any ) =>{
+
       modalVisible .value = true;
       doc.value = Tool.copy(record);//把列表的值先复制出来，就不影响record
       //不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
@@ -256,6 +283,10 @@ export default defineComponent({
 
       //为选择树添加一个“无”
       treeSelectData.value.unshift({id: 0,name:'无'});
+      setTimeout(function (){
+        editor.create();
+      },100);
+
     };
     /**
      * 添加
@@ -265,12 +296,13 @@ export default defineComponent({
       doc.value={
         ebookId: route.query.ebookId
       };
-
-
       treeSelectData.value = Tool.copy(level1.value);
-
       //为选择树添加一个“无”
       treeSelectData.value.unshift({id: 0,name:'无'});
+      setTimeout(function (){
+        editor.create();
+      },100);
+
     };
 
 
@@ -290,6 +322,7 @@ export default defineComponent({
 
 
     onMounted(() => {
+
       handleQuery();
 
     });
@@ -307,6 +340,7 @@ export default defineComponent({
       add,
       handleDelete,
       treeSelectData,
+      // showConfirm,
 
       doc,
       modalVisible,
