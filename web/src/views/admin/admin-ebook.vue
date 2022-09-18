@@ -53,7 +53,8 @@
                 cancel-text="否"
                 @confirm="handleDelete(record.id)"
             >
-              <a-button type="primary" >
+              <a-button style="color: #fff; background-color: #ff3300;
+                border-color: #ff3300;" type="primary" >
                 删除
               </a-button>
             </a-popconfirm>
@@ -333,5 +334,12 @@ export default defineComponent({
   border-radius: 8%;
   margin: 5px 0;
 }
+
+/*.button-error{*/
+/*  color: #fff;*/
+/*  background-color: #ff3300;*/
+/*  border-color: #ff3300;*/
+
+/*}*/
 
 </style>

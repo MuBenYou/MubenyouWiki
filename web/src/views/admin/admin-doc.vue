@@ -46,7 +46,8 @@
                     @confirm="handleDelete(record.id)"
                 >
 
-                  <a-button type="primary" size="small">
+                  <a-button style="color: #fff; background-color: #ff3300;
+                border-color: #ff3300;" type="primary" size="small">
                     删除
                   </a-button>
                 </a-popconfirm>
@@ -197,7 +198,8 @@ export default defineComponent({
         //因为树选择组件的属性状态，会随当前编辑的节点而变化,所以单独声明一个响应式变量,而不用level1
     const treeSelectData =ref();
     treeSelectData.value=[];
-    const doc=ref({});
+    const doc=ref();
+    doc.value= {};
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const  editor = new E('#content');
@@ -205,6 +207,7 @@ export default defineComponent({
 
     const handleSave = () => {
       modalLoading.value = true;
+      doc.value.content = editor.txt.html();
       axios.post("/doc/save",doc.value).then((response) => {
         modalLoading.value = false;   //只要返回了，就去掉loging效果
         const data = response.data;  //commonResp

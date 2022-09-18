@@ -4,8 +4,10 @@ package com.mby.wiki.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mby.wiki.aspect.LogAspect;
+import com.mby.wiki.domain.Content;
 import com.mby.wiki.domain.Doc;
 import com.mby.wiki.domain.DocExample;
+import com.mby.wiki.mapper.ContentMapper;
 import com.mby.wiki.mapper.DocMapper;
 import com.mby.wiki.req.DocQueryReq;
 import com.mby.wiki.req.DocSaveReq;
@@ -26,6 +28,9 @@ import java.util.List;
 public class DocService {
     @Resource
     private DocMapper docMapper;
+
+    @Resource
+    private ContentMapper contentMapper;
 
     @Resource
     private SnowFlake snowFlake;
@@ -74,14 +79,22 @@ public class DocService {
      * 保存
      */
     public void save(DocSaveReq req){
-        Doc doc=CopyUtil.copy(req,Doc.class);
+        Doc doc=CopyUtil.copy(req,Doc.class);//只复制doc，不会复制content
+        Content content=CopyUtil.copy(req,Content.class);//只复制到id和content
         if(ObjectUtils.isEmpty(doc.getId())){
             //新增
             doc.setId(snowFlake.nextId());
             docMapper.insert(doc);
+
+            content.setId(doc.getId());
+            contentMapper.insert(content);
         }else{
             //更新
             docMapper.updateByPrimaryKey(doc);
+            int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            if (count == 0){
+                contentMapper.insert(content);
+            }
         }
     }
 
