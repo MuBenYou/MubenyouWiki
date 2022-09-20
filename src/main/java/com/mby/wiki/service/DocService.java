@@ -117,6 +117,10 @@ public class DocService {
     public String findContent(Long id){
         //查找文档
        Content content = contentMapper.selectByPrimaryKey(id);//查到全部的字段，包括content
-        return content.getContent();//返回内容
+        if (ObjectUtils.isEmpty(content)){
+            return "";
+        }else {
+            return content.getContent();
+        }
     }
 }
