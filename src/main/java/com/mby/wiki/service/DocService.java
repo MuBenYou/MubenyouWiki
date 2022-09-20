@@ -63,9 +63,10 @@ public class DocService {
         pageResp.setList(respList);
         return pageResp;
     }
-    public List<DocQueryResp> all(){
+    public List<DocQueryResp> all(Long ebookId){
         //domain下的example mybaits自动生成了很多方法
         DocExample docExample = new DocExample();
+        docExample.createCriteria().andEbookIdEqualTo(ebookId);
         docExample.setOrderByClause("sort asc");
         //当作where语句
         List<Doc> docList = docMapper.selectByExample(docExample);//查询到所有的Doc实体
