@@ -213,7 +213,9 @@ export default defineComponent({
         modalLoading.value = false;   //只要返回了，就去掉loging效果
         const data = response.data;  //commonResp
         if(data.success){
-          modalVisible.value = false;
+          // modalVisible.value = false;
+          message.success("保存成功!");
+
           //重新加载列表
           handleQuery();
         }else {
@@ -302,6 +304,8 @@ export default defineComponent({
      * 编辑
      */
     const edit = ( record:any ) =>{
+      //清空富文本
+      editor.txt.html("");
       modalVisible .value = true;
       doc.value = Tool.copy(record);//把列表的值先复制出来，就不影响record
       //不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
@@ -318,6 +322,8 @@ export default defineComponent({
      * 添加
      */
     const add = () =>{
+      //清空富文本
+      editor.txt.html("");
       modalVisible .value = true;
       doc.value={
         ebookId: route.query.ebookId

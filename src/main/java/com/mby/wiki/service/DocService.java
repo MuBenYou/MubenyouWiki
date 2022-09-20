@@ -81,7 +81,7 @@ public class DocService {
     public void save(DocSaveReq req){
         Doc doc=CopyUtil.copy(req,Doc.class);//只复制doc，不会复制content
         Content content=CopyUtil.copy(req,Content.class);//只复制到id和content
-        if(ObjectUtils.isEmpty(doc.getId())){
+        if(ObjectUtils.isEmpty(req.getId())){
             //新增
             doc.setId(snowFlake.nextId());
             docMapper.insert(doc);
