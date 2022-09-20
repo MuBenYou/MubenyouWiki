@@ -36,6 +36,17 @@ public class DocService {
     private SnowFlake snowFlake;
     private final static Logger LOG = LoggerFactory.getLogger(LogAspect.class);
 
+    public List<DocQueryResp> all(Long ebookId){
+        DocExample docExample = new DocExample();
+        docExample.createCriteria().andEbookIdEqualTo(ebookId);
+        docExample.setOrderByClause("sort asc");
+        List<Doc> docList = docMapper.selectByExample(docExample);//查询到所有的Doc实体
+
+        List<DocQueryResp> list = CopyUtil.copyList(docList, DocQueryResp.class);
+
+        return list;
+    }
+
     public PageResp<DocQueryResp> list(DocQueryReq req){
         //domain下的example mybaits自动生成了很多方法
         DocExample docExample = new DocExample();
@@ -62,18 +73,6 @@ public class DocService {
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(respList);
         return pageResp;
-    }
-    public List<DocQueryResp> all(Long ebookId){
-        //domain下的example mybaits自动生成了很多方法
-        DocExample docExample = new DocExample();
-        docExample.createCriteria().andEbookIdEqualTo(ebookId);
-        docExample.setOrderByClause("sort asc");
-        //当作where语句
-        List<Doc> docList = docMapper.selectByExample(docExample);//查询到所有的Doc实体
-
-        List<DocQueryResp> list = CopyUtil.copyList(docList, DocQueryResp.class);
-
-        return list;
     }
 
     /**

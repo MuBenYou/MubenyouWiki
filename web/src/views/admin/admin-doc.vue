@@ -138,20 +138,9 @@ export default defineComponent({
 
 
     const loading = ref(false);
-    // const showConfirm = () => {
-    //   Modal.confirm({
-    //     title: '你确定要删除吗?',
-    //     icon: createVNode(ExclamationCircleOutlined),
-    //     content: createVNode('div', { style: 'color:red;' }, 'Some descriptions'),
-    //     onOk() {
-    //       console.log('OK');
-    //     },
-    //     onCancel() {
-    //       console.log('Cancel');
-    //     },
-    //     class: 'test',
-    //   });
-    // };
+    //因为树选择组件的属性状态，会随当前编辑的节点而变化,所以单独声明一个响应式变量,而不用level1
+    const treeSelectData =ref();
+    treeSelectData.value=[];
 
     const columns = [//页面的响应变量 不是数据的响应变量 代表就是这个表格里面有多少个数据 下面数据我们自己定义的
 
@@ -177,7 +166,7 @@ export default defineComponent({
       loading.value = true;
       //如果不清空现有数据，刘编辑保存重新加载数据后，再点编辑
       level1.value=[];
-      axios.get("/doc/all/"+route.query.ebookId).then((response) => {
+      axios.get("/doc/all/" + route.query.ebookId).then((response) => {
         loading.value = false;
         const data = response.data;
         if (data.success){
@@ -187,6 +176,10 @@ export default defineComponent({
           level1.value=[];
           level1.value = Tool.array2Tree(docs.value,0);
           console.log("树形结构:",level1);
+
+          //父文档下拉框初始化，相当于点击新增
+          treeSelectData.value = Tool.copy(level1.value) || [];
+          treeSelectData.value.unshift({id: 0,name: '无'});
         }else {
           message.error(data.message);
         }
@@ -196,11 +189,9 @@ export default defineComponent({
 
 
     /**表单*/
-        //因为树选择组件的属性状态，会随当前编辑的节点而变化,所以单独声明一个响应式变量,而不用level1
-    const treeSelectData =ref();
-    treeSelectData.value=[];
+
     const doc=ref();
-    doc.value= {};
+    doc.value= {ebookId: route.query.ebookId};
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const  editor = new E('#content');
@@ -239,7 +230,7 @@ export default defineComponent({
           const children = node.children;
           if (Tool.isNotEmpty(children)) {
             for (let j = 0; j < children.length; j++) {
-              setDisable(children, children[j].id)
+              setDisable(children, children[j].id);
             }
           }
         }else {
@@ -328,7 +319,7 @@ export default defineComponent({
       doc.value={
         ebookId: route.query.ebookId
       };
-      treeSelectData.value = Tool.copy(level1.value);
+      treeSelectData.value = Tool.copy(level1.value) || [];
       //为选择树添加一个“无”
       treeSelectData.value.unshift({id: 0,name:'无'});
     };
@@ -351,6 +342,7 @@ export default defineComponent({
 
     onMounted(() => {
       handleQuery();
+
       editor.create();
 
     });
