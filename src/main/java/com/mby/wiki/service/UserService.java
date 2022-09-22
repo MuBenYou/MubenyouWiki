@@ -10,6 +10,7 @@ import com.mby.wiki.domain.User;
 import com.mby.wiki.domain.UserExample;
 import com.mby.wiki.mapper.UserMapper;
 import com.mby.wiki.req.UserQueryReq;
+import com.mby.wiki.req.UserResetPasswordReq;
 import com.mby.wiki.req.UserSaveReq;
 import com.mby.wiki.resp.PageResp;
 import com.mby.wiki.resp.UserQueryResp;
@@ -84,6 +85,7 @@ public class UserService {
         }else{
             //更新
             user.setLoginName(null);
+            user.setPassword(null);
             userMapper.updateByPrimaryKeySelective(user);
         }
     }
@@ -108,5 +110,10 @@ public class UserService {
             return userList.get(0);
 
         }
+    }
+
+    public void resetPassword(UserResetPasswordReq req) {
+        User user = CopyUtil.copy(req, User.class);
+        userMapper.updateByPrimaryKeySelective(user);
     }
 }

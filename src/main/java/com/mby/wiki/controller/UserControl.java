@@ -1,10 +1,11 @@
 package com.mby.wiki.controller;
 
 import com.mby.wiki.req.UserQueryReq;
+import com.mby.wiki.req.UserResetPasswordReq;
 import com.mby.wiki.req.UserSaveReq;
 import com.mby.wiki.resp.CommonResp;
-import com.mby.wiki.resp.UserQueryResp;
 import com.mby.wiki.resp.PageResp;
+import com.mby.wiki.resp.UserQueryResp;
 import com.mby.wiki.service.UserService;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,16 @@ public class UserControl {
     public CommonResp delete(@PathVariable long id){
         CommonResp resp = new CommonResp();
         userService.delete(id);
+        return resp;
+    }
+
+
+    @PostMapping("/reset-password")
+    public CommonResp resetPassword(@Valid @RequestBody UserResetPasswordReq req){
+        req.setPassword(DigestUtils.md5DigestAsHex(
+                req.getPassword().getBytes()));
+        CommonResp resp = new CommonResp();
+        userService.resetPassword(req);
         return resp;
     }
 }
