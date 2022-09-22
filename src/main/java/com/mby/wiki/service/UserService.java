@@ -4,18 +4,21 @@ package com.mby.wiki.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mby.wiki.aspect.LogAspect;
+import com.mby.wiki.controller.BusinessException;
+import com.mby.wiki.controller.BusinessExceptionCode;
 import com.mby.wiki.domain.User;
 import com.mby.wiki.domain.UserExample;
 import com.mby.wiki.mapper.UserMapper;
 import com.mby.wiki.req.UserQueryReq;
 import com.mby.wiki.req.UserSaveReq;
-import com.mby.wiki.resp.UserQueryResp;
 import com.mby.wiki.resp.PageResp;
+import com.mby.wiki.resp.UserQueryResp;
 import com.mby.wiki.utils.CopyUtil;
 import com.mby.wiki.utils.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -62,19 +65,26 @@ public class UserService {
         pageResp.setList(respList);
         return pageResp;
     }
-
     /**
      * 保存
      */
     public void save(UserSaveReq req){
         User user=CopyUtil.copy(req,User.class);
         if(ObjectUtils.isEmpty(user.getId())){
-            //新增
-            user.setId(snowFlake.nextId());
-            userMapper.insert(user);
+            User userDB = selectByLoginName(req.getLoginName());
+            if (ObjectUtils.isEmpty(userDB)){
+                //新增
+                user.setId(snowFlake.nextId());
+                userMapper.insert(user);
+            }else {
+                //用户名已存在
+                throw new BusinessException(
+                        BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+            }
         }else{
             //更新
-            userMapper.updateByPrimaryKey(user);
+            user.setLoginName(null);
+            userMapper.updateByPrimaryKeySelective(user);
         }
     }
 
@@ -84,6 +94,19 @@ public class UserService {
     public void delete(Long id){
         //删除指定id的数据
         userMapper.deleteByPrimaryKey(id);//deleteByPrimaryKey根据主键来删除。
+    }
 
+
+    public User selectByLoginName(String LoginName){
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+        criteria.andLoginNameEqualTo(LoginName);
+        List<User> userList = userMapper.selectByExample(userExample);
+        if (CollectionUtils.isEmpty(userList)){
+            return null;
+        }else {
+            return userList.get(0);
+
+        }
     }
 }
