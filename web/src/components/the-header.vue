@@ -1,6 +1,6 @@
 <template>
   <a-layout-header class="header">
-    <div class="logo">Mixiaoli</div>
+    <div class="logo">MuBenYou</div>
     <a-menu
         theme="dark"
         mode="horizontal"
@@ -36,7 +36,7 @@
           </a>
         </a-popconfirm>
         <a class="login-menu" v-show="user.id"><!--有值显示你好-->
-          <span>您好：{{user.name}}</span>
+          <span>{{user.name}}</span>
         </a>
         <a class="login-menu1" v-show="!user.id" @click="showLoginModal">
           <span>登录</span>
@@ -67,7 +67,7 @@
 
 
 <script lang="ts">
-import { defineComponent,ref } from 'vue';
+import {computed, defineComponent, ref} from 'vue';
 import axios from "axios";
 import { message } from 'ant-design-vue';
 import store from "@/store";
@@ -80,8 +80,8 @@ export default defineComponent({
   name: 'the-header',
   setup(){
     //登录后保存
-    const user = ref();
-    user.value = {};
+    const user = computed(() => store.state.user);
+
 
     //登录
     const loginUser = ref({
@@ -105,9 +105,7 @@ export default defineComponent({
         if (data.success) {
           loginModalVisible.value = false;
           message.success("登录成功！");
-          user.value = data.content;
-          store.commit("setUser",user.value);
-          console.log("user.value!!!!!!!!!",user.value);
+          store.commit("setUser", data.content);
         } else {
           message.error(data.message);
         }

@@ -10,14 +10,16 @@ import { createStore } from 'vuex'
 //   modules: {
 //   }
 // })
-
+declare let SessionStorage: any;
+const  USER = "USER";
 const store = createStore({
   state: {
-    user:{}
+    user:SessionStorage.get(USER) || {}
   },
   mutations: {
     setUser(state, user) {
       state.user = user;
+      SessionStorage.set(USER,user);
     }
   },
   actions: {
