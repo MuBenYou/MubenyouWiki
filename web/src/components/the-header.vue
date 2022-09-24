@@ -27,6 +27,7 @@
         </a-menu-item>
       </a-menu>
 
+
       <a-modal
           title="登录"
           v-model:visible="loginModalVisible"
@@ -47,13 +48,19 @@
 </template>
 <script lang="ts">
 import { defineComponent,ref } from 'vue';
+import axios from "axios";
+import { message } from 'ant-design-vue';
+
+
+declare let hexMd5: any;
+declare let KEY: any;
 
 export default defineComponent({
   name: 'the-header',
   setup(){
     const loginUser = ref({
       loginName:"test",
-      password:"test"
+      password:"test123"
     });
     const loginModalVisible = ref(false);
     const loginModalLoading = ref(false);
@@ -64,7 +71,18 @@ export default defineComponent({
     // 登录
     const login = () => {
       console.log("开始登录");
-
+      loginModalLoading.value = true;
+      loginUser.value.password = hexMd5(loginUser.value.password + KEY);
+      axios.post('/user/login', loginUser.value).then((response) => {
+        loginModalLoading.value = false;
+        const data = response.data;
+        if (data.success) {
+          loginModalVisible.value = false;
+          message.success("登录成功！");
+        } else {
+          message.error(data.message);
+        }
+      });
     };
 
     // // 退出登录
@@ -98,6 +116,6 @@ export default defineComponent({
 .login-menu {
   /*float: right !important;*/
   /*margin-right: 1px !important;*/
-  margin-left: 430px !important;
+  margin-left: 420px !important;
 }
 </style>
