@@ -1,10 +1,12 @@
 package com.mby.wiki.controller;
 
+import com.mby.wiki.req.UserLoginReq;
 import com.mby.wiki.req.UserQueryReq;
 import com.mby.wiki.req.UserResetPasswordReq;
 import com.mby.wiki.req.UserSaveReq;
 import com.mby.wiki.resp.CommonResp;
 import com.mby.wiki.resp.PageResp;
+import com.mby.wiki.resp.UserLoginResp;
 import com.mby.wiki.resp.UserQueryResp;
 import com.mby.wiki.service.UserService;
 import org.springframework.util.DigestUtils;
@@ -53,4 +55,16 @@ public class UserControl {
         userService.resetPassword(req);
         return resp;
     }
+
+    @PostMapping("/login")
+    public CommonResp login(@Valid @RequestBody UserLoginReq req){
+        req.setPassword(DigestUtils.md5DigestAsHex(
+                req.getPassword().getBytes()));
+        CommonResp<UserLoginResp> resp = new CommonResp();
+        UserLoginResp userLoginResp = userService.login(req);
+        resp.setContent(userLoginResp);
+        return resp;
+    }
+
+
 }

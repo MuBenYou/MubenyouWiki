@@ -9,10 +9,12 @@ import com.mby.wiki.controller.BusinessExceptionCode;
 import com.mby.wiki.domain.User;
 import com.mby.wiki.domain.UserExample;
 import com.mby.wiki.mapper.UserMapper;
+import com.mby.wiki.req.UserLoginReq;
 import com.mby.wiki.req.UserQueryReq;
 import com.mby.wiki.req.UserResetPasswordReq;
 import com.mby.wiki.req.UserSaveReq;
 import com.mby.wiki.resp.PageResp;
+import com.mby.wiki.resp.UserLoginResp;
 import com.mby.wiki.resp.UserQueryResp;
 import com.mby.wiki.utils.CopyUtil;
 import com.mby.wiki.utils.SnowFlake;
@@ -112,8 +114,32 @@ public class UserService {
         }
     }
 
+    /*修改密码*/
     public void resetPassword(UserResetPasswordReq req) {
         User user = CopyUtil.copy(req, User.class);
         userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    /*登录*/
+    public UserLoginResp login(UserLoginReq req) {
+       User userDb = selectByLoginName(req.getLoginName());/*用用户名去查*/
+        if (ObjectUtils.isEmpty(userDb)){
+            //用户不存在
+            LOG.info("用户名不存在，{}",req.getLoginName());
+            throw new BusinessException(
+                    BusinessExceptionCode. LOGIN_USER_ERROR);
+        }else {
+            if (userDb.getPassword().equals(req.getPassword())){
+                //登录成功
+                UserLoginResp userLoginResp = CopyUtil.copy(userDb,UserLoginResp.class);
+                return userLoginResp;
+            }else{
+                //密码不正确
+                LOG.info("密码不对，输入的密码:{}，数据库密码:{}",req.getPassword(), userDb.getPassword());
+
+                throw new BusinessException(
+                        BusinessExceptionCode. LOGIN_USER_ERROR);
+            }
+        }
     }
 }
