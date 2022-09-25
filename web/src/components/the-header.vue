@@ -35,7 +35,7 @@
             <span>退出登录</span>
           </a>
         </a-popconfirm>
-        <a class="login-menu" v-show="user.id"><!--有值显示你好-->
+        <a class="login-menu" v-show="user.id"><!-- 有值显示你好-->
           <span>{{user.name}}</span>
         </a>
         <a class="login-menu1" v-show="!user.id" @click="showLoginModal">
