@@ -69,7 +69,7 @@
       title="Title"
       v-model:visible="modalVisible"
       :confirm-loading="modalLoading"
-      ok-text="我测,说藏话了"
+      ok-text="保存"
       @ok="handleModalOk"
   >
     <!--弹出表单-->
