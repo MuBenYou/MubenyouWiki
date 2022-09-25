@@ -112,11 +112,19 @@ export default defineComponent({
       });
     };
 
-    // // 退出登录
-    // const logout = () => {
-    //   console.log("退出登录开始");
-    //
-    // };
+    // 退出登录
+    const logout = () => {
+      console.log("退出登录开始");
+      axios.get('/user/logout/'+ user.value.token).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          message.success("退出登录成功！");
+          store.commit("setUser", {});
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
 
     return {
       loginModalVisible,
@@ -125,6 +133,7 @@ export default defineComponent({
       loginUser,
       login,
       user,
+      logout,
     }
   }
 });
