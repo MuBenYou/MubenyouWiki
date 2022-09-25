@@ -1,18 +1,30 @@
 package com.mby.wiki.config;
 
 
+import com.mby.wiki.interceptor.LoginInterceptor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-//@Configuration
+import javax.annotation.Resource;
+
+@Configuration
 public class SpringMvcConfig implements WebMvcConfigurer {
 
-//    @Resource
-//    LogInterceptor logInterceptor;
 
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(logInterceptor)
-//                //针对所有请求             过滤掉这些请求
-//                .addPathPatterns("/**").excludePathPatterns("/login");
-//
-//    }
+    @Resource
+    LoginInterceptor loginInterceptor;
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/test/**",
+                        "/redis/**",
+                        "/user/login",
+                        "/category/all",
+                        "/ebook/list",
+                        "/doc/all/**",
+                        "/doc/find-content/**"
+                );
+    }
 }

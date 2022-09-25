@@ -6,6 +6,7 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import * as Icons from '@ant-design/icons-vue';
 import axios from "axios";
+import {Tool} from "@/util/tool";
 
 
 /**
@@ -14,12 +15,18 @@ import axios from "axios";
  */
 axios.interceptors.request.use((config)=> {
     console.log('请求参数:', config);
+    const token = store.state.user.token;
+    if (Tool.isNotEmpty(token)) {
+        config.headers.token = token;
+        console.log("请求headers增加token:", token);
+    }
     return config;
 }, error => {
     return Promise.reject(error);
 });
 axios.interceptors.response.use((response)=> {
     console.log('返回参数', response);
+
     return response;
 }, error => {
     console.log('返回错误:', error);
