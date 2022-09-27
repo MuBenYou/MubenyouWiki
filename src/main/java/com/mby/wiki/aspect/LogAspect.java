@@ -3,6 +3,7 @@ package com.mby.wiki.aspect;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 import com.mby.wiki.utils.RequestContext;
+import com.mby.wiki.utils.SnowFlake;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -12,11 +13,13 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -31,13 +34,14 @@ public class LogAspect {
     @Pointcut("execution(public * com.mby.*.controller..*Control.*(..))")
     public void controllerPointcut() {}
 
-
+    @Resource
+    private SnowFlake snowFlake;
 
     @Before("controllerPointcut()")//前置通知
     public void doBefore(JoinPoint joinPoint) throws Throwable {//JoinPoint对象封装了SpringAop中切面方法的信息,在切面方法中添加JoinPoint参数,就可以获取到封装了该方法信息的JoinPoint对象.
 
-
-
+        //增加日志流水号
+        MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));
         // 开始打印请求日志
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
