@@ -4,6 +4,8 @@ package com.mby.wiki.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mby.wiki.aspect.LogAspect;
+import com.mby.wiki.controller.BusinessException;
+import com.mby.wiki.controller.BusinessExceptionCode;
 import com.mby.wiki.domain.Content;
 import com.mby.wiki.domain.Doc;
 import com.mby.wiki.domain.DocExample;
@@ -15,6 +17,8 @@ import com.mby.wiki.req.DocSaveReq;
 import com.mby.wiki.resp.DocQueryResp;
 import com.mby.wiki.resp.PageResp;
 import com.mby.wiki.utils.CopyUtil;
+import com.mby.wiki.utils.RedisUtil;
+import com.mby.wiki.utils.RequestContext;
 import com.mby.wiki.utils.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +42,9 @@ public class DocService {
 
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    private RedisUtil redisUtil;
     private final static Logger LOG = LoggerFactory.getLogger(LogAspect.class);
 
     public List<DocQueryResp> all(Long ebookId){
@@ -136,6 +143,14 @@ public class DocService {
     * 点赞
     * */
     public void vote(Long id){
-        docMapperCust.increaseViewCount(id);
+//        docMapperCust.increaseViewCount(id);
+        //远程IP+doc.id作为key，24小时内不能重复
+        String ip = RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat(
+                "DOC_VOTE" + id + "_" + ip,3600 * 24)){
+            docMapperCust.increaseVoteCount(id);
+        }else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
+        }
     }
 }
