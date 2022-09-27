@@ -9,6 +9,7 @@ import com.mby.wiki.domain.Doc;
 import com.mby.wiki.domain.DocExample;
 import com.mby.wiki.mapper.ContentMapper;
 import com.mby.wiki.mapper.DocMapper;
+import com.mby.wiki.mapper.DocMapperCust;
 import com.mby.wiki.req.DocQueryReq;
 import com.mby.wiki.req.DocSaveReq;
 import com.mby.wiki.resp.DocQueryResp;
@@ -28,6 +29,9 @@ import java.util.List;
 public class DocService {
     @Resource
     private DocMapper docMapper;
+
+    @Resource
+    private DocMapperCust docMapperCust;
 
     @Resource
     private ContentMapper contentMapper;
@@ -84,6 +88,8 @@ public class DocService {
         if(ObjectUtils.isEmpty(req.getId())){
             //新增
             doc.setId(snowFlake.nextId());
+            doc.setViewCount(0);
+            doc.setVoteCount(0);
             docMapper.insert(doc);
 
             content.setId(doc.getId());
@@ -117,6 +123,8 @@ public class DocService {
     public String findContent(Long id){
         //查找文档
        Content content = contentMapper.selectByPrimaryKey(id);//查到全部的字段，包括content
+        //文档阅读数加1
+        docMapperCust.increaseViewCount(id);
         if (ObjectUtils.isEmpty(content)){
             return "";
         }else {
