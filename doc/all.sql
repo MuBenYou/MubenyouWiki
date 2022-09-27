@@ -108,6 +108,7 @@ create table `user`(
 -- insert into `user` (id, login_name, name, password) values (1,'test','测试','e70e2222a9d67c4f2eae107533359aa4');
 insert into `user` (id, login_name, name, password) values (1,'test','测试','test');
 
+#安电子书分组统计文档数据
 update ebook t1,(select ebook_id,
     count(1) doc_count,sum(view_count) view_count,
     sum(vote_count) vote_count
