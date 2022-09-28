@@ -20,7 +20,6 @@ import com.mby.wiki.utils.CopyUtil;
 import com.mby.wiki.utils.RedisUtil;
 import com.mby.wiki.utils.RequestContext;
 import com.mby.wiki.utils.SnowFlake;
-import com.mby.wiki.websocket.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -46,9 +45,9 @@ public class DocService {
 
     @Resource
     private RedisUtil redisUtil;
-
     @Resource
-    private WebSocketServer webSocketServer;
+    private WsService wsService;
+
     private final static Logger LOG = LoggerFactory.getLogger(LogAspect.class);
 
     public List<DocQueryResp> all(Long ebookId){
@@ -156,11 +155,11 @@ public class DocService {
         }else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
-
         //推送消息
         Doc doc = docMapper.selectByPrimaryKey(id);
-        webSocketServer.sendInfo("【" + doc.getName() + "】被点赞！");
+        wsService.sendInfo("【" + doc.getName() + "】被点赞！");
     }
+
 
     public void updateEbookInfo(){
         docMapperCust.updateEbookInfo();
