@@ -20,7 +20,6 @@ import com.mby.wiki.utils.CopyUtil;
 import com.mby.wiki.utils.RedisUtil;
 import com.mby.wiki.utils.RequestContext;
 import com.mby.wiki.utils.SnowFlake;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -50,8 +49,8 @@ public class DocService {
     private RedisUtil redisUtil;
     @Resource
     private WsService wsService;
-    @Resource
-    private RocketMQTemplate rocketMQTemplate;
+//    @Resource
+//    private RocketMQTemplate rocketMQTemplate;
 
     private final static Logger LOG = LoggerFactory.getLogger(LogAspect.class);
 
@@ -164,9 +163,8 @@ public class DocService {
         //推送消息
         Doc doc = docMapper.selectByPrimaryKey(id);
         String logId = MDC.get("LOG_ID");
-//        wsService.sendInfo("【" + doc.getName() + "】被点赞！",logId);
-        rocketMQTemplate.convertAndSend("VOTE_TOPIC",
-                "【" + doc.getName() + "】被点赞！");
+        wsService.sendInfo("【" + doc.getName() + "】被点赞！",logId);
+//        rocketMQTemplate.convertAndSend("VOTE_TOPIC","【" + doc.getName() + "】被点赞！");
     }
 
 
