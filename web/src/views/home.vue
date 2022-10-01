@@ -23,7 +23,7 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }">
       <div class="welcome" v-show="isShowWelcome">
-      <h1>欢迎使用MuBenYou电子书</h1>
+        <the-welcome></the-welcome>
       </div>
 
       <a-list v-show ="!isShowWelcome" item-layout="vertical" size="large" :grid="{gutter : 20,column : 3}"  :data-source="ebooks">
@@ -64,6 +64,7 @@ import axios from "axios";
 import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
 import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
+import TheWelcome from "@/components/the-welcome.vue";
 
 const listData:any = [];
 
@@ -171,6 +172,7 @@ export default defineComponent({
     StarOutlined,
     LikeOutlined,
     MessageOutlined,
+    TheWelcome,
   },
 });
 </script>
