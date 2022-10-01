@@ -23,7 +23,7 @@ public class EbookSnapshotJob {
    /**
     * 每30秒更新电子书信息
     */
-   @Scheduled(cron = "0/5 * * * * ?")
+   @Scheduled(cron = "0/30 * * * * ?")
    public void doSnapshot() {
       //增加日志流水号
       MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));
